@@ -33,7 +33,6 @@ import app.revanced.manager.ui.component.SearchView
 import app.revanced.manager.ui.model.SelectedApp
 import app.revanced.manager.ui.viewmodel.AppSelectorViewModel
 import app.revanced.manager.util.APK_MIMETYPE
-import app.revanced.manager.util.transparentListItemColors
 import org.koin.androidx.compose.koinViewModel
 
 @OptIn(ExperimentalMaterial3Api::class)
@@ -111,9 +110,9 @@ fun AppSelectorScreen(
                                         )
                                     )
                                 }
-                            },
-                            colors = transparentListItemColors
+                            }
                         )
+
                     }
                 }
             } else {

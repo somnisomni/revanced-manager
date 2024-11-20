@@ -22,6 +22,7 @@ class Session(
     cacheDir: String,
     frameworkDir: String,
     aaptPath: String,
+    multithreadingDexFileWriter: Boolean,
     private val androidContext: Context,
     private val logger: Logger,
     private val input: File,
@@ -37,7 +38,8 @@ class Session(
             apkFile = input,
             temporaryFilesPath = tempDir,
             frameworkFileDirectory = frameworkDir,
-            aaptBinaryPath = aaptPath
+            aaptBinaryPath = aaptPath,
+            multithreadingDexFileWriter = multithreadingDexFileWriter,
         )
     )
 
@@ -49,7 +51,7 @@ class Session(
             state = State.RUNNING
         )
 
-        this().collect { (patch, exception) ->
+        this.apply(true).collect { (patch, exception) ->
             if (patch !in selectedPatches) return@collect
 
             if (exception != null) {
@@ -87,7 +89,7 @@ class Session(
         )
     }
 
-    suspend fun run(output: File, selectedPatches: PatchList) {
+    suspend fun run(output: File, selectedPatches: PatchList, integrations: List<File>) {
         updateProgress(state = State.COMPLETED) // Unpacking
 
         java.util.logging.Logger.getLogger("").apply {
@@ -101,7 +103,8 @@ class Session(
 
         with(patcher) {
             logger.info("Merging integrations")
-            this += selectedPatches.toSet()
+            acceptIntegrations(integrations.toSet())
+            acceptPatches(selectedPatches.toSet())
 
             logger.info("Applying patches...")
             applyPatchesVerbose(selectedPatches.sortedBy { it.name })

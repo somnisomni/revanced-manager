@@ -4,6 +4,7 @@ import app.revanced.manager.data.room.AppDatabase
 import app.revanced.manager.data.room.AppDatabase.Companion.generateUid
 import app.revanced.manager.data.room.bundles.PatchBundleEntity
 import app.revanced.manager.data.room.bundles.Source
+import app.revanced.manager.data.room.bundles.VersionInfo
 import kotlinx.coroutines.flow.distinctUntilChanged
 
 class PatchBundlePersistenceRepository(db: AppDatabase) {
@@ -25,7 +26,7 @@ class PatchBundlePersistenceRepository(db: AppDatabase) {
         PatchBundleEntity(
             uid = generateUid(),
             name = name,
-            version = null,
+            versionInfo = VersionInfo(),
             source = source,
             autoUpdate = autoUpdate
         ).also {
@@ -34,8 +35,8 @@ class PatchBundlePersistenceRepository(db: AppDatabase) {
 
     suspend fun delete(uid: Int) = dao.remove(uid)
 
-    suspend fun updateVersion(uid: Int, version: String?) =
-        dao.updateVersion(uid, version)
+    suspend fun updateVersion(uid: Int, patches: String?, integrations: String?) =
+        dao.updateVersion(uid, patches, integrations)
 
     suspend fun setAutoUpdate(uid: Int, value: Boolean) = dao.setAutoUpdate(uid, value)
 
@@ -47,7 +48,7 @@ class PatchBundlePersistenceRepository(db: AppDatabase) {
         val defaultSource = PatchBundleEntity(
             uid = 0,
             name = "",
-            version = null,
+            versionInfo = VersionInfo(),
             source = Source.API,
             autoUpdate = false
         )

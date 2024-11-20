@@ -50,7 +50,6 @@ import app.revanced.manager.util.mutableStateSetOf
 import app.revanced.manager.util.saver.snapshotStateListSaver
 import app.revanced.manager.util.saver.snapshotStateSetSaver
 import app.revanced.manager.util.toast
-import app.revanced.manager.util.transparentListItemColors
 import kotlinx.parcelize.Parcelize
 import org.koin.compose.koinInject
 import org.koin.core.component.KoinComponent
@@ -59,7 +58,6 @@ import sh.calvin.reorderable.ReorderableItem
 import sh.calvin.reorderable.rememberReorderableLazyColumnState
 import java.io.Serializable
 import kotlin.random.Random
-import kotlin.reflect.typeOf
 import androidx.compose.ui.window.Dialog as ComposeDialog
 
 private class OptionEditorScope<T : Any>(
@@ -98,17 +96,17 @@ private interface OptionEditor<T : Any> {
     fun Dialog(scope: OptionEditorScope<T>)
 }
 
-private inline fun <reified T : Serializable> OptionEditor<T>.toMapEditorElements() = arrayOf(
-    typeOf<T>() to this,
-    typeOf<List<T>>() to ListOptionEditor(this)
-)
-
 private val optionEditors = mapOf(
-    *BooleanOptionEditor.toMapEditorElements(),
-    *StringOptionEditor.toMapEditorElements(),
-    *IntOptionEditor.toMapEditorElements(),
-    *LongOptionEditor.toMapEditorElements(),
-    *FloatOptionEditor.toMapEditorElements()
+    "Boolean" to BooleanOptionEditor,
+    "String" to StringOptionEditor,
+    "Int" to IntOptionEditor,
+    "Long" to LongOptionEditor,
+    "Float" to FloatOptionEditor,
+    "BooleanArray" to ListOptionEditor(BooleanOptionEditor),
+    "StringArray" to ListOptionEditor(StringOptionEditor),
+    "IntArray" to ListOptionEditor(IntOptionEditor),
+    "LongArray" to ListOptionEditor(LongOptionEditor),
+    "FloatArray" to ListOptionEditor(FloatOptionEditor),
 )
 
 @Composable
@@ -147,7 +145,7 @@ fun <T : Any> OptionItem(option: Option<T>, value: T?, setValue: (T?) -> Unit) {
         val baseOptionEditor =
             optionEditors.getOrDefault(option.type, UnknownTypeEditor) as OptionEditor<T>
 
-        if (option.type != typeOf<Boolean>() && option.presets != null) PresetOptionEditor(baseOptionEditor)
+        if (option.type != "Boolean" && option.presets != null) PresetOptionEditor(baseOptionEditor)
         else baseOptionEditor
     }
 
@@ -407,8 +405,7 @@ private class PresetOptionEditor<T : Any>(private val innerEditor: OptionEditor<
                                         selected = selectedPreset == presetKey,
                                         onClick = { selectedPreset = presetKey }
                                     )
-                                },
-                                colors = transparentListItemColors
+                                }
                             )
                         }
 
@@ -433,7 +430,7 @@ private class ListOptionEditor<T : Serializable>(private val elementEditor: Opti
         option.key,
         option.description,
         option.required,
-        option.type.arguments.first().type!!,
+        option.type.removeSuffix("Array"),
         null,
         null
     ) { true }

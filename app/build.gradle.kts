@@ -3,22 +3,21 @@ import kotlin.random.Random
 plugins {
     alias(libs.plugins.android.application)
     alias(libs.plugins.kotlin.android)
-    alias(libs.plugins.kotlin.serialization)
-    alias(libs.plugins.kotlin.parcelize)
-    alias(libs.plugins.compose.compiler)
     alias(libs.plugins.devtools)
     alias(libs.plugins.about.libraries)
+    id("kotlin-parcelize")
+    kotlin("plugin.serialization") version "1.9.23"
 }
 
 android {
     namespace = "app.revanced.manager"
-    compileSdk = 35
-    buildToolsVersion = "35.0.0"
+    compileSdk = 34
+    buildToolsVersion = "34.0.0"
 
     defaultConfig {
         applicationId = "app.revanced.manager"
         minSdk = 26
-        targetSdk = 35
+        targetSdk = 34
         versionCode = 1
         versionName = "0.0.1"
         vectorDrawables.useSupportLibrary = true
@@ -82,11 +81,9 @@ android {
         jvmTarget = "17"
     }
 
-    buildFeatures {
-        compose = true
-        aidl = true
-        buildConfig = true
-    }
+    buildFeatures.compose = true
+    buildFeatures.aidl = true
+    buildFeatures.buildConfig=true
 
     android {
         androidResources {
@@ -94,6 +91,7 @@ android {
         }
     }
 
+    composeOptions.kotlinCompilerExtensionVersion = "1.5.10"
     externalNativeBuild {
         cmake {
             path = file("src/main/cpp/CMakeLists.txt")
@@ -114,6 +112,7 @@ dependencies {
     implementation(libs.runtime.compose)
     implementation(libs.splash.screen)
     implementation(libs.compose.activity)
+    implementation(libs.paging.common.ktx)
     implementation(libs.work.runtime.ktx)
     implementation(libs.preferences.datastore)
 

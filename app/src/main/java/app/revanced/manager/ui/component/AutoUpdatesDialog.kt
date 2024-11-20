@@ -24,7 +24,6 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import app.revanced.manager.R
 import app.revanced.manager.ui.component.haptics.HapticCheckbox
-import app.revanced.manager.util.transparentListItemColors
 
 @Composable
 fun AutoUpdatesDialog(onSubmit: (Boolean, Boolean) -> Unit) {
@@ -78,6 +77,5 @@ private fun AutoUpdatesItem(
     leadingContent = { Icon(icon, null) },
     headlineContent = { Text(stringResource(headline)) },
     trailingContent = { HapticCheckbox(checked = checked, onCheckedChange = null) },
-    modifier = Modifier.clickable { onCheckedChange(!checked) },
-    colors = transparentListItemColors
+    modifier = Modifier.clickable { onCheckedChange(!checked) }
 )

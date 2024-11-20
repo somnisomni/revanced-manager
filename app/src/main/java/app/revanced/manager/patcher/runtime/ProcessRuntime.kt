@@ -70,7 +70,7 @@ class ProcessRuntime(private val context: Context) : Runtime(context) {
         onProgress: ProgressEventHandler,
     ) = coroutineScope {
         // Get the location of our own Apk.
-        val managerBaseApk = pm.getPackageInfo(context.packageName)!!.applicationInfo!!.sourceDir
+        val managerBaseApk = pm.getPackageInfo(context.packageName)!!.applicationInfo.sourceDir
 
         val limit = "${prefs.patcherProcessMemoryLimit.get()}M"
         val propOverride = resolvePropOverride(context)?.absolutePath
@@ -148,11 +148,13 @@ class ProcessRuntime(private val context: Context) : Runtime(context) {
                 packageName = packageName,
                 inputFile = inputFile,
                 outputFile = outputFile,
+                enableMultithrededDexWriter = enableMultithreadedDexWriter(),
                 configurations = selectedPatches.map { (id, patches) ->
                     val bundle = bundles[id]!!
 
                     PatchConfiguration(
                         bundle.patchesJar.absolutePath,
+                        bundle.integrations?.absolutePath,
                         patches,
                         options[id].orEmpty()
                     )

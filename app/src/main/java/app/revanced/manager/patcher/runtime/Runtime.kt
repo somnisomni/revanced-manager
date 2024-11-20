@@ -26,6 +26,7 @@ sealed class Runtime(context: Context) : KoinComponent {
         context.cacheDir.resolve("framework").also { it.mkdirs() }.absolutePath
 
     protected suspend fun bundles() = patchBundlesRepo.bundles.first()
+    protected suspend fun enableMultithreadedDexWriter() = prefs.multithreadingDexFileWriter.get()
 
     abstract suspend fun execute(
         inputFile: String,
