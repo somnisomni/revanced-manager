@@ -1,6 +1,7 @@
-name: Build pull request
+name: Debug Build (PR or manual)
 
 on:
+  workflow_dispatch:
   pull_request:
     paths:
       - ".github/workflows/pr-build.yml"
