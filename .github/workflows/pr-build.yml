@@ -1,7 +1,13 @@
-name: Debug Build (PR or manual)
+name: Debug Build (PR/Push/Manual)
 
 on:
   workflow_dispatch:
+  push:
+    paths:
+      - "app/**"
+      - "gradle/**"
+      - "*.properties"
+      - ".kts"
   pull_request:
     paths:
       - ".github/workflows/pr-build.yml"
