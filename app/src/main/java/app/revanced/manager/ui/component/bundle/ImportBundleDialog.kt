@@ -36,7 +36,7 @@ fun ImportPatchBundleDialog(
     var bundleType by rememberSaveable { mutableStateOf(BundleType.Remote) }
     var patchBundle by rememberSaveable { mutableStateOf<Uri?>(null) }
     var remoteUrl by rememberSaveable { mutableStateOf("") }
-    var autoUpdate by rememberSaveable { mutableStateOf(false) }
+    var autoUpdate by rememberSaveable { mutableStateOf(true) }
 
     val patchActivityLauncher =
         rememberLauncherForActivityResult(ActivityResultContracts.GetContent()) { uri ->
